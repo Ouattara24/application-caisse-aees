@@ -1,9 +1,7 @@
 const CACHE_NAME = 'aees-caisse-v1';
 const urlsToCache = [
   '/',
-  '/static/manifest.json',
-  '/static/css/bootstrap.min.css',
-  '/static/js/bootstrap.bundle.min.js'
+  '/static/manifest.json'
 ];
 
 // Installation du service worker
