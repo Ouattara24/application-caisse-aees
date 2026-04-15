@@ -54,8 +54,8 @@
                         <td>{{ cotisation.montant }} FCFA</td>
                         <td>{{ cotisation.get_type_display }}</td>
                         <td>
-                            <a href="{% url 'caisse:cotisation_update' cotisation.pk %}" class="btn btn-sm btn-warning">Modifier</a>
-                            <a href="{% url 'caisse:cotisation_delete' cotisation.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
+                            <a href="{% url 'caisse:cotisation_update' cotisation.pk %}" class="btn btn-xs btn-warning">Modifier</a>
+                            <a href="{% url 'caisse:cotisation_delete' cotisation.pk %}" class="btn btn-xs btn-danger">Supprimer</a>
                         </td>
                     </tr>
                     {% empty %}

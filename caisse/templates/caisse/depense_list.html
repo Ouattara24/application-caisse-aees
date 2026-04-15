@@ -52,8 +52,8 @@
                         <td>{{ depense.montant }} FCFA</td>
                         <td>{{ depense.motif }}</td>
                         <td>
-                            <a href="{% url 'caisse:depense_update' depense.pk %}" class="btn btn-sm btn-warning">Modifier</a>
-                            <a href="{% url 'caisse:depense_delete' depense.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
+                            <a href="{% url 'caisse:depense_update' depense.pk %}" class="btn btn-xs btn-warning">Modifier</a>
+                            <a href="{% url 'caisse:depense_delete' depense.pk %}" class="btn btn-xs btn-danger">Supprimer</a>
                         </td>
                     </tr>
                     {% empty %}

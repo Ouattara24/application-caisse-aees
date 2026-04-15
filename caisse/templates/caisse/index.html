@@ -3,6 +3,51 @@
 {% block title %}Accueil - AEES{% endblock %}
 
 {% block content %}
+<!-- Navbar with Hamburger Menu -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">🏛️ AEES Caisse</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="membresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        👥 Membres
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="membresDropdown">
+                        <li><a class="dropdown-item" href="{% url 'caisse:membre_create' %}">Enregistrer un membre</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:membre_list' %}">Tous les membres</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:bureau_general_list' %}">Bureau Général</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="cotisationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        💰 Cotisations
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="cotisationsDropdown">
+                        <li><a class="dropdown-item" href="{% url 'caisse:cotisation_create' %}?type=ANNUELLE">Cotisation annuelle</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:cotisation_create' %}?type=BOOSTER">Autre cotisation</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:cotisation_record_list' %}">Toutes les cotisations</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="depensesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        💸 Dépenses & Dons
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="depensesDropdown">
+                        <li><a class="dropdown-item" href="{% url 'caisse:depense_create' %}">Enregistrer dépense</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:don_financier_create' %}">Don financier</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:don_materiel_create' %}">Don matériel</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:dashboard' %}">Tableau de Bord</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container-fluid px-2 px-md-4">
     <!-- En-tête principal -->
     <div class="row mb-4">
@@ -24,26 +69,6 @@
                     <h2 class="h5 mb-0">👥 Gestion des Membres</h2>
                 </div>
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-12 col-sm-6 col-md-4">
-                            <a href="{% url 'caisse:membre_create' %}" class="btn btn-success btn-lg w-100">
-                                <i class="fas fa-user-plus me-2"></i>Enregistrer un membre
-                            </a>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-4">
-                            <a href="{% url 'caisse:membre_list' %}" class="btn btn-info btn-lg w-100">
-                                <i class="fas fa-users me-2"></i>Tous les membres
-                            </a>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <a href="{% url 'caisse:bureau_general_list' %}" class="btn btn-warning btn-lg w-100">
-                                <i class="fas fa-crown me-2"></i>Bureau Général
-                            </a>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
                     <h3 class="h6 text-muted mb-3">📍 Membres par section</h3>
                     <div class="row g-2">
                         {% for section in sections %}
@@ -67,23 +92,6 @@
                     <h2 class="h5 mb-0">💰 Gestion des Cotisations</h2>
                 </div>
                 <div class="card-body">
-                    <div class="row g-2 mb-4">
-                        <div class="col-12 col-sm-6 col-md-4">
-                            <a href="{% url 'caisse:cotisation_create' %}?type=ANNUELLE" class="btn btn-success btn-lg w-100">
-                                <i class="fas fa-calendar-check me-2"></i>Cotisation annuelle
-                            </a>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-4">
-                            <a href="{% url 'caisse:cotisation_create' %}?type=BOOSTER" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-rocket me-2"></i>Autre cotisation
-                            </a>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <a href="{% url 'caisse:cotisation_record_list' %}" class="btn btn-info btn-lg w-100">
-                                <i class="fas fa-list me-2"></i>Toutes les cotisations
-                            </a>
-                        </div>
-                    </div>
 
                     <h3 class="h6 text-muted mb-3">🌍 Cotisations globales par type</h3>
                     <div class="row g-2 mb-3">
@@ -171,28 +179,7 @@
                     <h2 class="h5 mb-0">💸 Gestion des Dépenses et Dons</h2>
                 </div>
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <a href="{% url 'caisse:depense_create' %}" class="btn btn-danger btn-lg w-100">
-                                <i class="fas fa-minus-circle me-2"></i>Enregistrer dépense
-                            </a>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <a href="{% url 'caisse:don_financier_create' %}" class="btn btn-secondary btn-lg w-100">
-                                <i class="fas fa-hand-holding-heart me-2"></i>Don financier
-                            </a>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <a href="{% url 'caisse:don_materiel_create' %}" class="btn btn-dark btn-lg w-100">
-                                <i class="fas fa-box me-2"></i>Don matériel
-                            </a>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <a href="{% url 'caisse:dashboard' %}" class="btn btn-success btn-lg w-100">
-                                <i class="fas fa-chart-bar me-2"></i>Tableau de Bord
-                            </a>
-                        </div>
-                    </div>
+                    <!-- Content moved to navbar menu -->
                 </div>
             </div>
         </div>
