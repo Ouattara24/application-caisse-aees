@@ -64,8 +64,8 @@
                         <td>{{ membre.section.nom }}</td>
                         <td>{% if membre.est_membre_bureau_general %}<span class="badge bg-success">Oui</span>{% else %}<span class="badge bg-secondary">Non</span>{% endif %}</td>
                         <td>
-                            <a href="{% url 'caisse:membre_update' membre.pk %}" class="btn btn-xs btn-warning">Modifier</a>
-                            <a href="{% url 'caisse:membre_delete' membre.pk %}" class="btn btn-xs btn-danger">Supprimer</a>
+                            <button onclick="window.location.href='{% url 'caisse:membre_update' membre.pk %}'" style="padding:4px 8px; font-size:12px;">Modifier</button>
+                            <button onclick="window.location.href='{% url 'caisse:membre_delete' membre.pk %}'" style="padding:4px 8px; font-size:12px; background:red; color:white;">Supprimer</button>
                         </td>
                     </tr>
                     {% empty %}

@@ -164,6 +164,28 @@
     </style>
 </head>
 <body>
+    <button onclick="toggleMenu()" style="font-size:24px;">☰</button>
+
+    <div id="menu" style="display:none;">
+        <a href="{% url 'caisse:dashboard' %}">Tableau de bord</a><br>
+        <a href="{% url 'caisse:membre_create' %}">Ajouter membre</a><br>
+        <a href="{% url 'caisse:membre_list' %}">Tous les membres</a><br>
+        <a href="{% url 'caisse:bureau_general_list' %}">Bureau general</a><br>
+        <a href="{% url 'caisse:cotisation_record_list' %}">Gestion cotisations</a><br>
+        <a href="{% url 'caisse:depense_list' %}">Gestion des depenses</a><br>
+    </div>
+
+    <script>
+    function toggleMenu() {
+        var menu = document.getElementById("menu");
+        if (menu.style.display === "none") {
+            menu.style.display = "block";
+        } else {
+            menu.style.display = "none";
+        }
+    }
+    </script>
+
     <div class="container mt-4">
         {% if messages %}
         <div class="messages">
