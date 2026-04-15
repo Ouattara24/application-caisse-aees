@@ -1,0 +1,142 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Tableau de Bord de l'AEES</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3>Solde Général</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="text-success">{{ solde_general }} FCFA</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3>Payeurs du Bureau Général</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="text-info">{{ payeurs_bureau }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h3>Dépenses Totales</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="text-danger">{{ total_depenses }} FCFA</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3>Cotisations par Section</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for section, montant in cotisations_par_section.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ section }}
+                        <span class="badge bg-primary rounded-pill">{{ montant }} FCFA</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h3>Dépenses par Section</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for section, montant in depenses_par_section.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ section }}
+                        <span class="badge bg-warning rounded-pill">{{ montant }} FCFA</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3>Dernières Cotisations</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Membre</th>
+                                <th>Montant</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cotisation in toutes_cotisations|slice:":5" %}
+                            <tr>
+                                <td>{{ cotisation.membre }}</td>
+                                <td>{{ cotisation.montant }}</td>
+                                <td>{{ cotisation.get_type_display }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center">Aucune cotisation.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h3>Dernières Dépenses</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Section</th>
+                                <th>Montant</th>
+                                <th>Motif</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for depense in toutes_depenses|slice:":5" %}
+                            <tr>
+                                <td>{{ depense.section }}</td>
+                                <td>{{ depense.montant }}</td>
+                                <td>{{ depense.motif|truncatechars:20 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center">Aucune dépense.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

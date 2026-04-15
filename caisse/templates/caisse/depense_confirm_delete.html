@@ -1,0 +1,19 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Supprimer dépense{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h2>Supprimer dépense</h2>
+    </div>
+    <div class="card-body">
+        <p>Voulez-vous vraiment supprimer la dépense de <strong>{{ object.section.nom }}</strong> ({{ object.montant }} FCFA) ?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirmer suppression</button>
+            <a href="{% url 'caisse:depense_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

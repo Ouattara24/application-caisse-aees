@@ -1,0 +1,54 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Ajouter une Dépense{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+        <h2>Ajouter une dépense</h2>
+        <a href="{% url 'caisse:index' %}" class="btn btn-light btn-sm">Retour</a>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <h5>État des fonds</h5>
+            <p>Total cotisé AEES : {{ total_cotisations|default:0 }} FCFA</p>
+            <p>Total dons financiers : {{ total_dons|default:0 }} FCFA</p>
+            <p>Total dépenses : {{ total_depenses_global|default:0 }} FCFA</p>
+            <p><strong>Solde caisse général : {{ solde_general|default:0 }} FCFA</strong></p>
+            <hr>
+            <p>Total cotisé par section :</p>
+            <ul>
+                {% for item in cotisations_par_section %}
+                    <li>{{ item.membre__section__nom }} : {{ item.total }} FCFA</li>
+                {% empty %}
+                    <li>Aucune cotisation sectionnée.</li>
+                {% endfor %}
+            </ul>
+            <p>Total dépensé par section :</p>
+            <ul>
+                {% for item in depenses_par_section %}
+                    <li>{{ item.section__nom }} : {{ item.total }} FCFA</li>
+                {% empty %}
+                    <li>Aucune dépense sectionnée.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.section.label_tag }}
+                {{ form.section }}
+            </div>
+            <div class="mb-3">
+                {{ form.montant.label_tag }}
+                {{ form.montant }}
+            </div>
+            <div class="mb-3">
+                {{ form.motif.label_tag }}
+                {{ form.motif }}
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

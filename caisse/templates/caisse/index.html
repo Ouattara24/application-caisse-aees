@@ -1,0 +1,120 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Accueil - AEES{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h1 class="card-title">Bienvenue dans l'application de gestion de caisse de l'AEES</h1>
+            </div>
+            <div class="card-body">
+                <h3>Gestion des Membres</h3>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:membre_create' %}" class="btn btn-success btn-lg w-100 mb-3">Enregistrer un membre</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:membre_list' %}" class="btn btn-info btn-lg w-100 mb-3">Tous les membres</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:bureau_general_list' %}" class="btn btn-warning btn-lg w-100 mb-3">Bureau Général</a>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5>Membres par section</h5>
+                    </div>
+                    {% for section in sections %}
+                    <div class="col-md-2 mb-2">
+                        <a href="{% url 'caisse:membre_section_list' section.id %}" class="btn btn-outline-secondary btn-sm w-100">{{ section.nom }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <hr>
+
+                <h3>Gestion des Cotisations</h3>
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <a href="{% url 'caisse:cotisation_create' %}?type=ANNUELLE" class="btn btn-success btn-lg w-100 mb-3">Enregistrer cotisation annuelle</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'caisse:cotisation_create' %}?type=BOOSTER" class="btn btn-primary btn-lg w-100 mb-3">Enregistrer autre cotisation</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'caisse:cotisation_record_list' %}" class="btn btn-info btn-lg w-100 mb-3">Toutes les cotisations</a>
+                    </div>
+                </div>
+                <h5>Cotisations globales par type</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'caisse:cotisation_payeurs_by_type' 'ANNUELLE' %}" class="btn btn-outline-success btn-lg w-100" title="Total: {{ total_annuelle }} FCFA">cotisation_type_annuel ({{ total_annuelle }} FCFA)</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'caisse:cotisation_payeurs_by_type' 'BOOSTER' %}" class="btn btn-outline-primary btn-lg w-100" title="Total: {{ total_autre }} FCFA">cotisation_type_autre ({{ total_autre }} FCFA)</a>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'caisse:bureau_general_cotisation_payeurs_by_type' 'ANNUELLE' %}" class="btn btn-outline-warning btn-lg w-100" title="Total: {{ bg_annuelle }} FCFA">cotisation_annuelle_BG ({{ bg_annuelle }} FCFA)</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'caisse:bureau_general_cotisation_payeurs_by_type' 'BOOSTER' %}" class="btn btn-outline-warning btn-lg w-100" title="Total: {{ bg_autre }} FCFA">cotisation_type_autre_BG ({{ bg_autre }} FCFA)</a>
+                    </div>
+                </div>
+
+                <h5>Types de cotisations par section</h5>
+                <div class="row mb-4">
+                    {% for section in sections_with_totals %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body py-3 px-3">
+                                <h6 class="card-title mb-3">{{ section.nom }}</h6>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'caisse:section_cotisation_payeurs_by_type' section.id 'ANNUELLE' %}" class="btn btn-outline-success btn-sm">Cotisation annuelle<br><small>{{ section.annuelle_total }} FCFA</small></a>
+                                    <a href="{% url 'caisse:section_cotisation_payeurs_by_type' section.id 'BOOSTER' %}" class="btn btn-outline-primary btn-sm">Autre cotisation<br><small>{{ section.autre_total }} FCFA</small></a>
+                                </div>
+                            </div>
+                            <div class="card-footer text-center" style="font-size:0.85rem; color:#555;">Total section : {{ section.total }} FCFA</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <h5>Totale cotisation par section</h5>
+                <div class="row mb-4">
+                    {% for section in sections_with_totals %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center py-3 px-3">
+                                <h6 class="card-title mb-2">{{ section.nom }}</h6>
+                                <p class="mb-3" style="font-size:0.9rem;">Total cotisé : <strong>{{ section.total }} FCFA</strong></p>
+                                <a href="{% url 'caisse:cotisations_section_list' section.id %}" class="btn btn-outline-primary btn-sm w-100">Voir cotisations</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <h3>Gestion des Dépenses et Dons</h3>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:depense_create' %}" class="btn btn-danger btn-lg w-100 mb-3">Enregistrer dépense</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:don_financier_create' %}" class="btn btn-secondary btn-lg w-100 mb-3">Don financier</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:don_materiel_create' %}" class="btn btn-dark btn-lg w-100 mb-3">Don matériel</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'caisse:dashboard' %}" class="btn btn-success btn-lg w-100 mb-3">Tableau de Bord</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

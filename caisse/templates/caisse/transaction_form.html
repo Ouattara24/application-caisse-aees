@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter transaction</title>
+</head>
+<body>
+    <h1>Ajouter une transaction</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enregistrer</button>
+    </form>
+    <p><a href="{% url 'caisse:transaction_list' %}">Retour à la liste</a></p>
+</body>
+</html>
