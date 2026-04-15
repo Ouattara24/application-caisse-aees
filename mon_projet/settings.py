@@ -86,11 +86,12 @@ WSGI_APPLICATION = 'mon_projet.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 import dj_database_url
+import os
 
 DATABASES = {
     'default': dj_database_url.config(
-        conn_max_age=600,
-        ssl_require=True
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
     )
 }
 
