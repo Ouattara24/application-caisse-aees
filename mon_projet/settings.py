@@ -26,10 +26,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-yoxhe4ldjt0&o=1@kvmx7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["application-caisse-aees.onrender.com"]
+ALLOWED_HOSTS = [
+    'application-caisse-aees.onrender.com',
+    'application-caisse-aees.onrender.com',
+    '.onrender.com',  # Pour les sous-domaines Render
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://harsh-gory-similarly.ngrok-free.dev',
+    'https://application-caisse-aees.onrender.com',
 ]
 
 
@@ -128,13 +132,5 @@ STATICFILES_DIRS = [
     BASE_DIR / 'caisse' / 'static',
 ]
 
-# Configuration WhiteNoise pour Railway
+# Configuration WhiteNoise pour Render
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'harsh-gory-similarly.ngrok-free.dev'
-]
-CSRF_TRUSTED_ORIGINS = [
-    'https://harsh-gory-similarly.ngrok-free.dev'
-]
