@@ -29,3 +29,4 @@ urlpatterns = [
     path('don-materiel/ajouter/', views.DonMaterielCreateView.as_view(), name='don_materiel_create'),
     path('dashboard/', views.dashboard, name='dashboard'),
 ]
+path('create-admin/', views.create_admin),

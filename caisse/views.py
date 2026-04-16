@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum, F
@@ -515,7 +517,21 @@ def cotisations_bureau_general_list(request):
         'is_paginated': page_obj.has_other_pages(),
         'paginator': paginator,
     }
-    return render(request, 'caisse/cotisations_bureau_general_list.html', context)
+    sections = Section.objects.all()
+    sections = Section.objects.all()
+
+context = {
+    'sections': sections,
+    'cotisations_par_section': cotisations_par_section,
+    'depenses_par_section': depenses_par_section,
+    'solde_general': solde_general,
+    'payeurs_bureau': payeurs_bureau,
+    'total_depenses': total_depenses,
+    'toutes_cotisations': toutes_cotisations,
+    'toutes_depenses': toutes_depenses,
+}
+
+return render(request, 'caisse/dashboard.html', context)
 
 def dashboard(request):
     """Tableau de bord avec statistiques."""
@@ -554,3 +570,10 @@ def dashboard(request):
         'toutes_depenses': toutes_depenses,
     })
 
+   from django.contrib.auth.models import User
+
+def create_admin(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "", "2410ouatt")
+        return HttpResponse("Admin créé avec succès")
+    return HttpResponse("Admin existe déjà")
