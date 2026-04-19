@@ -1,3 +1,35 @@
+# 🚀 Déploiement AEES sur Render
+
+## Instructions de déploiement sur Render :
+
+### 1. Préparation du projet
+- Assurez-vous que tous les fichiers sont commités sur GitHub
+- Vérifiez que `requirements.txt`, `runtime.txt`, et `Procfile` sont présents
+
+### 2. Déploiement sur Render
+1. Allez sur https://render.com et créez un compte
+2. Cliquez sur "New +" → "Web Service"
+3. Connectez votre compte GitHub et sélectionnez ce repository
+4. Configurez le service :
+   - **Name**: `application-caisse-aees`
+   - **Environment**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn mon_projet.wsgi:application --bind 0.0.0.0:$PORT`
+
+### 3. Variables d'environnement
+Ajoutez ces variables dans les "Environment" de Render :
+- `SECRET_KEY`: Une clé secrète longue et aléatoire (générez-en une nouvelle)
+- `DEBUG`: `False`
+- `DATABASE_URL`: Sera automatiquement configuré par Render (PostgreSQL)
+
+### 4. Base de données
+Render fournit automatiquement une base de données PostgreSQL. Assurez-vous que `dj-database-url` est dans `requirements.txt`.
+
+### 5. Déploiement
+Cliquez sur "Create Web Service" pour déployer.
+
+---
+
 # 🚀 Déploiement AEES sur Railway (RECOMMANDÉ)
 
 ## Étapes pour déployer sur Railway :

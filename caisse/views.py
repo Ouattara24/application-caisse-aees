@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum, F
 from django.http import Http404
@@ -9,7 +10,21 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django import forms
 
-from .models import Section, Membre, Cotisation, Depense, DonFinancier, DonMateriel
+from .models import Section, Membre, Cotisation, Depense, DonFinancier, DonMateriel, ResteAncienneCaisse, AutreArgent, DemandeCarte
+
+DEFAULT_AEES_SECTIONS = [
+    'Sokala-Sobara',
+    'Dabakala',
+    'Bouaké',
+    'Abidjan',
+    'Korhogo',
+]
+
+def ensure_default_sections():
+    if Section.objects.count() == 0:
+        for nom in DEFAULT_AEES_SECTIONS:
+            Section.objects.get_or_create(nom=nom)
+
 
 class MembreForm(forms.ModelForm):
     class Meta:
@@ -36,8 +51,24 @@ class DonMaterielForm(forms.ModelForm):
         model = DonMateriel
         fields = ['description', 'source']
 
+class ResteAncienneCaisseForm(forms.ModelForm):
+    class Meta:
+        model = ResteAncienneCaisse
+        fields = ['montant', 'description']
+
+class AutreArgentForm(forms.ModelForm):
+    class Meta:
+        model = AutreArgent
+        fields = ['montant', 'source']
+
+class DemandeCarteForm(forms.ModelForm):
+    class Meta:
+        model = DemandeCarte
+        fields = ['membre', 'statut', 'notes']
+
 def index(request):
     """Page d'accueil avec boutons pour les différentes actions."""
+    ensure_default_sections()
     sections = Section.objects.all()
     
     # Calculer les cotisations totales par section et par type
@@ -337,6 +368,60 @@ class DonMaterielCreateView(CreateView):
         return super().form_valid(form)
 
 
+class ResteAncienneCaisseCreateView(CreateView):
+    model = ResteAncienneCaisse
+    form_class = ResteAncienneCaisseForm
+    template_name = 'caisse/reste_ancienne_caisse_form.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Reste ancienne caisse ajouté avec succès.')
+        return super().form_valid(form)
+
+
+class AutreArgentCreateView(CreateView):
+    model = AutreArgent
+    form_class = AutreArgentForm
+    template_name = 'caisse/autre_argent_form.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Autre argent ajouté avec succès.')
+        return super().form_valid(form)
+
+
+class DemanteCarteCreateView(CreateView):
+    model = DemandeCarte
+    form_class = DemandeCarteForm
+    template_name = 'caisse/demande_carte_form.html'
+    success_url = reverse_lazy('caisse:demande_carte_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Demande de carte créée avec succès.')
+        return super().form_valid(form)
+
+
+class DemandeCarteListView(ListView):
+    model = DemandeCarte
+    template_name = 'caisse/demande_carte_list.html'
+    context_object_name = 'demandes'
+    paginate_by = 20
+
+    def get_queryset(self):
+        queryset = super().get_queryset().select_related('membre__section').order_by('-date_demande')
+        statut = self.request.GET.get('statut', '')
+        
+        if statut:
+            queryset = queryset.filter(statut=statut)
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['statut'] = self.request.GET.get('statut', '')
+        return context
+
+
 class CotisationRecordListView(ListView):
     model = Cotisation
     template_name = 'caisse/cotisation_record_list.html'
@@ -517,24 +602,13 @@ def cotisations_bureau_general_list(request):
         'is_paginated': page_obj.has_other_pages(),
         'paginator': paginator,
     }
-    sections = Section.objects.all()
-    sections = Section.objects.all()
 
-context = {
-    'sections': sections,
-    'cotisations_par_section': cotisations_par_section,
-    'depenses_par_section': depenses_par_section,
-    'solde_general': solde_general,
-    'payeurs_bureau': payeurs_bureau,
-    'total_depenses': total_depenses,
-    'toutes_cotisations': toutes_cotisations,
-    'toutes_depenses': toutes_depenses,
-}
+    return render(request, 'caisse/cotisations_bureau_general_list.html', context)
 
-return render(request, 'caisse/dashboard.html', context)
 
 def dashboard(request):
     """Tableau de bord avec statistiques."""
+    ensure_default_sections()
     # Cotisations par section
     cotisations_par_section = {}
     depenses_par_section = {}
@@ -548,7 +622,9 @@ def dashboard(request):
     total_cotisations = Cotisation.objects.aggregate(sum=Sum('montant'))['sum'] or 0
     total_depenses = Depense.objects.aggregate(sum=Sum('montant'))['sum'] or 0
     total_dons_financiers = DonFinancier.objects.aggregate(sum=Sum('montant'))['sum'] or 0
-    solde_general = total_cotisations + total_dons_financiers - total_depenses
+    total_reste_ancienne_caisse = ResteAncienneCaisse.objects.aggregate(sum=Sum('montant'))['sum'] or 0
+    total_autre_argent = AutreArgent.objects.aggregate(sum=Sum('montant'))['sum'] or 0
+    solde_general = total_cotisations + total_dons_financiers + total_reste_ancienne_caisse + total_autre_argent - total_depenses
 
     # Membres bureau général ayant payé
     membres_bureau = Membre.objects.filter(est_membre_bureau_general=True)
@@ -560,17 +636,23 @@ def dashboard(request):
     # Toutes les dépenses
     toutes_depenses = Depense.objects.all()
 
+    sections = Section.objects.all()
+
     return render(request, 'caisse/dashboard.html', {
+        'sections': sections,
         'cotisations_par_section': cotisations_par_section,
         'depenses_par_section': depenses_par_section,
         'total_depenses': total_depenses,
+        'total_cotisations': total_cotisations,
+        'total_dons_financiers': total_dons_financiers,
+        'total_reste_ancienne_caisse': total_reste_ancienne_caisse,
+        'total_autre_argent': total_autre_argent,
         'solde_general': solde_general,
         'payeurs_bureau': payeurs_bureau,
         'toutes_cotisations': toutes_cotisations,
         'toutes_depenses': toutes_depenses,
     })
 
-   from django.contrib.auth.models import User
 
 def create_admin(request):
     if not User.objects.filter(username="admin").exists():

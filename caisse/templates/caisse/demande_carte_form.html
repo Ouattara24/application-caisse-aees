@@ -1,0 +1,30 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Nouvelle Demande de Carte{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-warning text-white">
+        <h2>Enregistrer demande de carte membre</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label for="id_membre">Membre</label>
+                {{ form.membre }}
+            </div>
+            <div class="form-group mb-3">
+                <label for="id_statut">Statut</label>
+                {{ form.statut }}
+            </div>
+            <div class="form-group mb-3">
+                <label for="id_notes">Notes</label>
+                {{ form.notes }}
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{% url 'caisse:demande_carte_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

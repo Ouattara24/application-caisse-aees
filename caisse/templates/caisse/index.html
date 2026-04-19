@@ -29,6 +29,7 @@
                     <ul class="dropdown-menu" aria-labelledby="cotisationsDropdown">
                         <li><a class="dropdown-item" href="{% url 'caisse:cotisation_create' %}?type=ANNUELLE">Cotisation annuelle</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:cotisation_create' %}?type=BOOSTER">Autre cotisation</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:cotisations_bureau_general_list' %}">Payeurs Bureau Général</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:cotisation_record_list' %}">Toutes les cotisations</a></li>
                     </ul>
                 </li>
@@ -40,6 +41,10 @@
                         <li><a class="dropdown-item" href="{% url 'caisse:depense_create' %}">Enregistrer dépense</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:don_financier_create' %}">Don financier</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:don_materiel_create' %}">Don matériel</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:reste_ancienne_caisse_create' %}">Reste ancienne caisse</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:autre_argent_create' %}">Autre argent</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:demande_carte_create' %}">Nouvelle demande de carte</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:demande_carte_list' %}">Voir demandes de carte</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:dashboard' %}">Tableau de Bord</a></li>
                     </ul>
                 </li>

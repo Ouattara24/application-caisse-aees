@@ -4,6 +4,7 @@ from . import views
 app_name = 'caisse'
 
 urlpatterns = [
+    path('create-admin/', views.create_admin, name='create_admin'),
     path('', views.index, name='index'),
     path('membres/', views.MembreListView.as_view(), name='membre_list'),
     path('membres/<int:pk>/modifier/', views.MembreUpdateView.as_view(), name='membre_update'),
@@ -27,6 +28,9 @@ urlpatterns = [
     path('depense/ajouter/', views.DepenseCreateView.as_view(), name='depense_create'),
     path('don-financier/ajouter/', views.DonFinancierCreateView.as_view(), name='don_financier_create'),
     path('don-materiel/ajouter/', views.DonMaterielCreateView.as_view(), name='don_materiel_create'),
+    path('reste-ancienne-caisse/ajouter/', views.ResteAncienneCaisseCreateView.as_view(), name='reste_ancienne_caisse_create'),
+    path('autre-argent/ajouter/', views.AutreArgentCreateView.as_view(), name='autre_argent_create'),
+    path('demande-carte/ajouter/', views.DemanteCarteCreateView.as_view(), name='demande_carte_create'),
+    path('demande-carte/', views.DemandeCarteListView.as_view(), name='demande_carte_list'),
     path('dashboard/', views.dashboard, name='dashboard'),
 ]
-path('create-admin/', views.create_admin),

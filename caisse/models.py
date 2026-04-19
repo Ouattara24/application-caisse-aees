@@ -107,3 +107,51 @@ class DonMateriel(models.Model):
         verbose_name = 'don matériel'
         verbose_name_plural = 'dons matériels'
 
+
+class ResteAncienneCaisse(models.Model):
+    """Reste d'argent provenant de l'ancienne caisse."""
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reste ancienne caisse - {self.montant} FCFA"
+
+    class Meta:
+        verbose_name = 'reste ancienne caisse'
+        verbose_name_plural = 'restes ancienne caisse'
+
+
+class AutreArgent(models.Model):
+    """Autre argent entrant dans la caisse de l'AEES."""
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    source = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Autre argent de {self.source} - {self.montant} FCFA"
+
+    class Meta:
+        verbose_name = 'autre argent'
+        verbose_name_plural = 'autres argents'
+
+
+class DemandeCarte(models.Model):
+    """Une demande de carte membre."""
+    membre = models.ForeignKey(Membre, on_delete=models.CASCADE)
+    date_demande = models.DateTimeField(auto_now_add=True)
+    statut_choices = [
+        ('EN_ATTENTE', 'En attente'),
+        ('ACCEPTE', 'Accepté'),
+        ('REFUSE', 'Refusé'),
+    ]
+    statut = models.CharField(max_length=10, choices=statut_choices, default='EN_ATTENTE')
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Demande carte de {self.membre} - {self.statut}"
+
+    class Meta:
+        verbose_name = 'demande de carte'
+        verbose_name_plural = 'demandes de carte'
+

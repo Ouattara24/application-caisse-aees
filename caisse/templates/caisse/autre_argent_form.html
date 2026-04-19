@@ -1,0 +1,26 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Autre Argent{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h2>Enregistrer autre argent</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label for="id_montant">Montant (FCFA)</label>
+                {{ form.montant }}
+            </div>
+            <div class="form-group mb-3">
+                <label for="id_source">Source</label>
+                {{ form.source }}
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{% url 'caisse:index' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
