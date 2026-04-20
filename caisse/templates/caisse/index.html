@@ -41,11 +41,26 @@
                         <li><a class="dropdown-item" href="{% url 'caisse:depense_create' %}">Enregistrer dépense</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:don_financier_create' %}">Don financier</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:don_materiel_create' %}">Don matériel</a></li>
-                        <li><a class="dropdown-item" href="{% url 'caisse:reste_ancienne_caisse_create' %}">Reste ancienne caisse</a></li>
-                        <li><a class="dropdown-item" href="{% url 'caisse:autre_argent_create' %}">Autre argent</a></li>
-                        <li><a class="dropdown-item" href="{% url 'caisse:demande_carte_create' %}">Nouvelle demande de carte</a></li>
-                        <li><a class="dropdown-item" href="{% url 'caisse:demande_carte_list' %}">Voir demandes de carte</a></li>
                         <li><a class="dropdown-item" href="{% url 'caisse:dashboard' %}">Tableau de Bord</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'caisse:reste_ancienne_caisse_create' %}">
+                        📦 Reste Ancienne Caisse
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'caisse:autre_argent_create' %}">
+                        💵 Autre Argent
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="carteDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        🎫 Demande de Carte
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="carteDropdown">
+                        <li><a class="dropdown-item" href="{% url 'caisse:demande_carte_create' %}">Nouvelle demande</a></li>
+                        <li><a class="dropdown-item" href="{% url 'caisse:demande_carte_list' %}">Voir demandes</a></li>
                     </ul>
                 </li>
             </ul>

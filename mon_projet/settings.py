@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -39,6 +39,8 @@ if not SECRET_KEY:
 ALLOWED_HOSTS = [
     'application-caisse-aees.onrender.com',
     '.onrender.com',
+    '127.0.0.1',
+    'localhost',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
