@@ -37,6 +37,31 @@
     .btn {
         border-radius: 8px;
     }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+        .card-header .d-flex > * {
+            margin-bottom: 0.5rem;
+        }
+        .card-header .d-flex > *:last-child {
+            margin-bottom: 0;
+        }
+        .btn {
+            width: 100%;
+            margin-bottom: 0.25rem;
+        }
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+        .card-body .btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+    }
 </style>
 ```
 
@@ -48,7 +73,7 @@
 
 <div class="container mt-3">
     <button onclick="toggleMenu()" class="btn btn-primary mb-3">
-        ☰ Menu
+        📊 Tableau de bord
     </button>
 
 ```

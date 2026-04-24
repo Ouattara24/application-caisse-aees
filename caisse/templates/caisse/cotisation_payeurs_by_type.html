@@ -37,7 +37,7 @@
             </table>
         </div>
         <p class="mt-3"><strong>Total des membres payeurs : {{ payer_count }}</strong></p>
-        <p><strong>Total cotisé : {{ total_sum }} FCFA</strong></p>
+        <p><strong>Total cotisé : {{ total_sum|floatformat:0 }} FCFA</strong></p>
         {% if is_paginated %}
         <nav aria-label="Pagination des payeurs">
             <ul class="pagination justify-content-center">

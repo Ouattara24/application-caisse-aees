@@ -24,7 +24,7 @@
                     {% for item in page_obj %}
                     <tr>
                         <td>{{ item.membre__prenom }} {{ item.membre__nom }}</td>
-                        <td class="text-success"><strong>{{ item.total }} FCFA</strong></td>
+                        <td class="text-success"><strong>{{ item.total|floatformat:0 }} FCFA</strong></td>
                     </tr>
                     {% empty %}
                     <tr><td colspan="2" class="text-center">Aucun membre de cette section ayant cotisé.</td></tr>

@@ -51,7 +51,7 @@
                         <td>{{ cotisation.date }}</td>
                         <td>{{ cotisation.membre.prenom }} {{ cotisation.membre.nom }}</td>
                         <td>{{ cotisation.membre.section.nom }}</td>
-                        <td>{{ cotisation.montant }} FCFA</td>
+                        <td>{{ cotisation.montant|floatformat:0 }} FCFA</td>
                         <td>{{ cotisation.get_type_display }}</td>
                         <td>
                             <a href="{% url 'caisse:cotisation_update' cotisation.pk %}" class="btn btn-xs btn-warning">Modifier</a>
@@ -76,7 +76,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ total_global }} FCFA</td>
+                            <td>{{ total_global|floatformat:0 }} FCFA</td>
                         </tr>
                     </tbody>
                 </table>
@@ -95,7 +95,7 @@
                         {% for t in total_par_section %}
                         <tr>
                             <td>{{ t.membre__section__nom }}</td>
-                            <td>{{ t.total }} FCFA</td>
+                            <td>{{ t.total|floatformat:0 }} FCFA</td>
                         </tr>
                         {% empty %}
                         <tr><td colspan="2" class="text-center">Aucune cotisation enregistrée.</td></tr>

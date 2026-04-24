@@ -33,6 +33,18 @@
             </div>
         </form>
 
+        <h5>Dépenses par section</h5>
+        <div class="mb-3">
+            {% for section in sections %}
+                <a href="{% url 'caisse:depenses_section_list' section.id %}" 
+                   class="btn btn-outline-danger m-1">
+                    {{ section.nom }}
+                </a>
+            {% empty %}
+                <p style="color:red;">Aucune section disponible</p>
+            {% endfor %}
+        </div>
+
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead>
@@ -49,7 +61,7 @@
                     <tr>
                         <td>{{ depense.date }}</td>
                         <td>{{ depense.section.nom }}</td>
-                        <td>{{ depense.montant }} FCFA</td>
+                        <td>{{ depense.montant|floatformat:0 }} FCFA</td>
                         <td>{{ depense.motif }}</td>
                         <td>
                             <a href="{% url 'caisse:depense_update' depense.pk %}" class="btn btn-xs btn-warning">Modifier</a>
@@ -77,10 +89,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ total_cotisations }} FCFA</td>
-                            <td>{{ total_dons }} FCFA</td>
-                            <td>{{ total_depenses_global }} FCFA</td>
-                            <td>{{ solde_general }} FCFA</td>
+                            <td>{{ total_cotisations|floatformat:0 }} FCFA</td>
+                            <td>{{ total_dons|floatformat:0 }} FCFA</td>
+                            <td>{{ total_depenses_global|floatformat:0 }} FCFA</td>
+                            <td>{{ solde_general|floatformat:0 }} FCFA</td>
                         </tr>
                     </tbody>
                 </table>
@@ -101,7 +113,7 @@
                                 {% for item in cotisations_par_section %}
                                 <tr>
                                     <td>{{ item.membre__section__nom }}</td>
-                                    <td>{{ item.total }} FCFA</td>
+                                    <td>{{ item.total|floatformat:0 }} FCFA</td>
                                 </tr>
                                 {% empty %}
                                 <tr><td colspan="2" class="text-center">Aucune cotisation sectionnée.</td></tr>
@@ -123,7 +135,7 @@
                                 {% for item in depenses_par_section %}
                                 <tr>
                                     <td>{{ item.section__nom }}</td>
-                                    <td>{{ item.total }} FCFA</td>
+                                    <td>{{ item.total|floatformat:0 }} FCFA</td>
                                 </tr>
                                 {% empty %}
                                 <tr><td colspan="2" class="text-center">Aucune dépense sectionnée.</td></tr>
@@ -148,9 +160,9 @@
                     <tbody>
                         <tr>
                             <td>{{ section_name }}</td>
-                            <td>{{ section_total_cotise|default:0 }} FCFA</td>
-                            <td>{{ section_total_depense|default:0 }} FCFA</td>
-                            <td>{{ section_solde|default:0 }} FCFA</td>
+                            <td>{{ section_total_cotise|default:0|floatformat:0 }} FCFA</td>
+                            <td>{{ section_total_depense|default:0|floatformat:0 }} FCFA</td>
+                            <td>{{ section_solde|default:0|floatformat:0 }} FCFA</td>
                         </tr>
                     </tbody>
                 </table>

@@ -23,7 +23,7 @@
                     <tr>
                         <td>{{ item.membre__prenom }} {{ item.membre__nom }}</td>
                         <td>{{ item.membre__section__nom }}</td>
-                        <td class="text-success"><strong>{{ item.total }} FCFA</strong></td>
+                        <td class="text-success"><strong>{{ item.total|floatformat:0 }} FCFA</strong></td>
                     </tr>
                     {% empty %}
                     <tr><td colspan="3" class="text-center">Aucun membre du bureau général ayant cotisé.</td></tr>

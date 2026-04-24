@@ -16,6 +16,7 @@ urlpatterns = [
     path('cotisations/', views.cotisations_list, name='cotisations_list'),
     path('cotisations/section/<int:section_id>/', views.cotisations_section_list, name='cotisations_section_list'),
     path('cotisations/bureau-general/', views.cotisations_bureau_general_list, name='cotisations_bureau_general_list'),
+    path('depenses/section/<int:section_id>/', views.depenses_section_list, name='depenses_section_list'),
     path('cotisations/gestion/', views.CotisationRecordListView.as_view(), name='cotisation_record_list'),
     path('cotisations/payeurs/<str:type_code>/', views.CotisationPayeursByTypeView.as_view(), name='cotisation_payeurs_by_type'),
     path('cotisations/bureau-general/payeurs/<str:type_code>/', views.BureauGeneralCotisationPayeursByTypeView.as_view(), name='bureau_general_cotisation_payeurs_by_type'),

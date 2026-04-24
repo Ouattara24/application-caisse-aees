@@ -606,6 +606,28 @@ def cotisations_bureau_general_list(request):
     return render(request, 'caisse/cotisations_bureau_general_list.html', context)
 
 
+def depenses_section_list(request, section_id):
+    """Liste des dépenses d'une section."""
+    from django.core.paginator import Paginator
+    from django.db.models import Sum
+    
+    section = get_object_or_404(Section, pk=section_id)
+    page_number = request.GET.get('page')
+    
+    depenses = Depense.objects.filter(section=section).order_by('-date')
+    
+    paginator = Paginator(depenses, 10)
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'section': section,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'paginator': paginator,
+    }
+    return render(request, 'caisse/depenses_section_list.html', context)
+
+
 def dashboard(request):
     """Tableau de bord avec statistiques."""
     ensure_default_sections()
@@ -626,9 +648,14 @@ def dashboard(request):
     total_autre_argent = AutreArgent.objects.aggregate(sum=Sum('montant'))['sum'] or 0
     solde_general = total_cotisations + total_dons_financiers + total_reste_ancienne_caisse + total_autre_argent - total_depenses
 
-    # Membres bureau général ayant payé
-    membres_bureau = Membre.objects.filter(est_membre_bureau_general=True)
-    payeurs_bureau = Cotisation.objects.filter(membre__in=membres_bureau).values('membre').distinct().count()
+    # Nombre total de tous les membres
+    total_membres = Membre.objects.count()
+
+    # Nombre de membres ayant payé cotisation annuelle
+    membres_payeurs_annuelle = Cotisation.objects.filter(type='ANNUELLE').values('membre').distinct().count()
+
+    # Nombre de membres ayant payé cotisation autre
+    membres_payeurs_autre = Cotisation.objects.filter(type='BOOSTER').values('membre').distinct().count()
 
     # Toutes les cotisations
     toutes_cotisations = Cotisation.objects.all()
@@ -648,7 +675,9 @@ def dashboard(request):
         'total_reste_ancienne_caisse': total_reste_ancienne_caisse,
         'total_autre_argent': total_autre_argent,
         'solde_general': solde_general,
-        'payeurs_bureau': payeurs_bureau,
+        'total_membres': total_membres,
+        'membres_payeurs_annuelle': membres_payeurs_annuelle,
+        'membres_payeurs_autre': membres_payeurs_autre,
         'toutes_cotisations': toutes_cotisations,
         'toutes_depenses': toutes_depenses,
     })
@@ -659,3 +688,4 @@ def create_admin(request):
         User.objects.create_superuser("admin", "", "2410ouatt")
         return HttpResponse("Admin créé avec succès")
     return HttpResponse("Admin existe déjà")
+    

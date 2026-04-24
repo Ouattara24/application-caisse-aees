@@ -8,7 +8,7 @@
         <h2>Supprimer dépense</h2>
     </div>
     <div class="card-body">
-        <p>Voulez-vous vraiment supprimer la dépense de <strong>{{ object.section.nom }}</strong> ({{ object.montant }} FCFA) ?</p>
+        <p>Voulez-vous vraiment supprimer la dépense de <strong>{{ object.section.nom }}</strong> ({{ object.montant|floatformat:0 }} FCFA) ?</p>
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Confirmer suppression</button>
