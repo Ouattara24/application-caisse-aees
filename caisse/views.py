@@ -647,6 +647,10 @@ def dashboard(request):
     total_reste_ancienne_caisse = ResteAncienneCaisse.objects.aggregate(sum=Sum('montant'))['sum'] or 0
     total_autre_argent = AutreArgent.objects.aggregate(sum=Sum('montant'))['sum'] or 0
     solde_general = total_cotisations + total_dons_financiers + total_reste_ancienne_caisse + total_autre_argent - total_depenses
+    total_entrees = total_cotisations + total_reste_ancienne_caisse + total_autre_argent + total_dons_financiers
+
+    # Nombre total de dons matériels
+    total_dons_materiels = DonMateriel.objects.count()
 
     # Nombre total de tous les membres
     total_membres = Membre.objects.count()
@@ -675,6 +679,8 @@ def dashboard(request):
         'total_reste_ancienne_caisse': total_reste_ancienne_caisse,
         'total_autre_argent': total_autre_argent,
         'solde_general': solde_general,
+        'total_entrees': total_entrees,
+        'total_dons_materiels': total_dons_materiels,
         'total_membres': total_membres,
         'membres_payeurs_annuelle': membres_payeurs_annuelle,
         'membres_payeurs_autre': membres_payeurs_autre,
