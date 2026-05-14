@@ -39,6 +39,7 @@ if not SECRET_KEY:
 ALLOWED_HOSTS = [
     'application-caisse-aees.onrender.com',
     '.onrender.com',
+    '.railway.app',
     '127.0.0.1',
     'localhost',
 ]
