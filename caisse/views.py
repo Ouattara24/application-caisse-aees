@@ -20,7 +20,15 @@ DEFAULT_AEES_SECTIONS = [
     'Korhogo',
 ]
 
+DEFAULT_SECTION_NAME_REPAIRS = {
+    'BouakÚ': 'Bouaké',
+    'Bouak┌': 'Bouaké',
+}
+
 def ensure_default_sections():
+    for bad_name, good_name in DEFAULT_SECTION_NAME_REPAIRS.items():
+        Section.objects.filter(nom=bad_name).update(nom=good_name)
+
     if Section.objects.count() == 0:
         for nom in DEFAULT_AEES_SECTIONS:
             Section.objects.get_or_create(nom=nom)

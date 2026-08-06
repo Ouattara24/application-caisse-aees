@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'True').lower() in {'1', 'true', 'yes', 'on'}
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -30,23 +30,25 @@ if not SECRET_KEY:
     if DEBUG:
         SECRET_KEY = 'django-insecure-yoxhe4ldjt0&o=1@kvmx7-h*6np0-l%gokm%-m2em%9_f+h3cx'
     else:
-        SECRET_KEY = 'fallback-production-key-change-this-immediately'
-        # En production, il est préférable de lever une erreur plutôt que d'utiliser une clé de secours
-        # raise ValueError('SECRET_KEY environment variable must be set in production')
-
+        SECRET_KEY = os.urandom(32).hex()
 
 
 ALLOWED_HOSTS = [
-    'application-caisse-aees.onrender.com',
-    '.onrender.com',
-    '.railway.app',
     '127.0.0.1',
     'localhost',
+    'application-caisse-aees.onrender.com',
+    '.onrender.com',
 ]
+
+render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
 
 CSRF_TRUSTED_ORIGINS = [
     'https://application-caisse-aees.onrender.com',
 ]
+if render_host:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{render_host}')
 
 
 # Application definition
@@ -64,7 +66,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ajouté pour Railway
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -158,9 +160,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security settings for production
 if not DEBUG:
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() in {'1', 'true', 'yes', 'on'}
+    SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False').lower() in {'1', 'true', 'yes', 'on'}
+    CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False').lower() in {'1', 'true', 'yes', 'on'}
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'

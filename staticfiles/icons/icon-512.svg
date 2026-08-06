@@ -6,8 +6,6 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" fill="url(#grad1)" rx="64"/>
-  <!-- Symbole € stylisé -->
-  <path d="M160 185 Q160 130 213 130 L320 130 Q373 130 373 185 L373 225 Q373 250 345 250 L293 250 L293 275 L345 275 Q398 275 398 325 L398 365 Q398 418 345 418 L213 418 Q160 418 160 365 L160 325 Q160 300 188 300 L240 300 L240 275 L188 275 Q135 275 135 225 Z" fill="white"/>
   <!-- Texte AEES -->
-  <text x="256" y="370" font-family="Arial, sans-serif" font-size="64" font-weight="bold" text-anchor="middle" fill="white">AEES</text>
+  <text x="256" y="320" font-family="Arial, sans-serif" font-size="120" font-weight="bold" text-anchor="middle" fill="white">AEES</text>
 </svg>
