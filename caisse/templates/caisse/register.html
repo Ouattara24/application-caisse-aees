@@ -1,0 +1,23 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Créer un compte - AEES{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">Créer un compte</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Créer un compte</button>
+                </form>
+                <p class="mt-3">Vous avez déjà un compte ? <a href="{% url 'login' %}">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,10 @@
 from django.http import HttpResponse
 
 from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum, F
@@ -74,6 +78,21 @@ class DemandeCarteForm(forms.ModelForm):
         model = DemandeCarte
         fields = ['membre', 'statut', 'notes']
 
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Compte créé avec succès. Vous êtes maintenant connecté.')
+            return redirect('caisse:index')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'caisse/register.html', {'form': form})
+
+
+@login_required
 def index(request):
     """Page d'accueil avec boutons pour les différentes actions."""
     ensure_default_sections()
@@ -126,7 +145,7 @@ def index(request):
     
     return render(request, 'caisse/index.html', context)
 
-class MembreListView(ListView):
+class MembreListView(LoginRequiredMixin, ListView):
     model = Membre
     template_name = 'caisse/membre_list.html'
     context_object_name = 'membres'
@@ -153,7 +172,7 @@ class MembreListView(ListView):
         return context
 
 
-class BureauGeneralListView(ListView):
+class BureauGeneralListView(LoginRequiredMixin, ListView):
     model = Membre
     template_name = 'caisse/bureau_general_list.html'
     context_object_name = 'membres'
@@ -173,7 +192,7 @@ class BureauGeneralListView(ListView):
         context['query'] = self.request.GET.get('q', '')
         return context
 
-class MembreCreateView(CreateView):
+class MembreCreateView(LoginRequiredMixin, CreateView):
     model = Membre
     form_class = MembreForm
     template_name = 'caisse/membre_form.html'
@@ -184,7 +203,7 @@ class MembreCreateView(CreateView):
         return super().form_valid(form)
 
 
-class MembreUpdateView(UpdateView):
+class MembreUpdateView(LoginRequiredMixin, UpdateView):
     model = Membre
     form_class = MembreForm
     template_name = 'caisse/membre_form.html'
@@ -195,7 +214,7 @@ class MembreUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class MembreDeleteView(DeleteView):
+class MembreDeleteView(LoginRequiredMixin, DeleteView):
     model = Membre
     template_name = 'caisse/membre_confirm_delete.html'
     success_url = reverse_lazy('caisse:membre_list')
@@ -204,7 +223,7 @@ class MembreDeleteView(DeleteView):
         messages.success(self.request, 'Membre supprimé avec succès.')
         return super().delete(request, *args, **kwargs)
 
-class CotisationCreateView(CreateView):
+class CotisationCreateView(LoginRequiredMixin, CreateView):
     model = Cotisation
     form_class = CotisationForm
     template_name = 'caisse/cotisation_form.html'
@@ -238,7 +257,7 @@ class MembreSectionListView(MembreListView):
         return context
 
 
-class CotisationPayeursByTypeView(ListView):
+class CotisationPayeursByTypeView(LoginRequiredMixin, ListView):
     model = Membre
     template_name = 'caisse/cotisation_payeurs_by_type.html'
     context_object_name = 'membres'
@@ -266,7 +285,7 @@ class CotisationPayeursByTypeView(ListView):
         return context
 
 
-class BureauGeneralCotisationPayeursByTypeView(ListView):
+class BureauGeneralCotisationPayeursByTypeView(LoginRequiredMixin, ListView):
     model = Membre
     template_name = 'caisse/cotisation_payeurs_by_type.html'
     context_object_name = 'membres'
@@ -295,7 +314,7 @@ class BureauGeneralCotisationPayeursByTypeView(ListView):
         return context
 
 
-class SectionCotisationPayeursByTypeView(ListView):
+class SectionCotisationPayeursByTypeView(LoginRequiredMixin, ListView):
     model = Membre
     template_name = 'caisse/cotisation_payeurs_by_type.html'
     context_object_name = 'membres'
@@ -333,7 +352,7 @@ class SectionCotisationPayeursByTypeView(ListView):
         return context
 
 
-class DepenseCreateView(CreateView):
+class DepenseCreateView(LoginRequiredMixin, CreateView):
     model = Depense
     form_class = DepenseForm
     template_name = 'caisse/depense_form.html'
@@ -354,7 +373,7 @@ class DepenseCreateView(CreateView):
         return super().form_valid(form)
 
 
-class DonFinancierCreateView(CreateView):
+class DonFinancierCreateView(LoginRequiredMixin, CreateView):
     model = DonFinancier
     form_class = DonFinancierForm
     template_name = 'caisse/don_financier_form.html'
@@ -365,7 +384,7 @@ class DonFinancierCreateView(CreateView):
         return super().form_valid(form)
 
 
-class DonMaterielCreateView(CreateView):
+class DonMaterielCreateView(LoginRequiredMixin, CreateView):
     model = DonMateriel
     form_class = DonMaterielForm
     template_name = 'caisse/don_materiel_form.html'
@@ -376,7 +395,7 @@ class DonMaterielCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ResteAncienneCaisseCreateView(CreateView):
+class ResteAncienneCaisseCreateView(LoginRequiredMixin, CreateView):
     model = ResteAncienneCaisse
     form_class = ResteAncienneCaisseForm
     template_name = 'caisse/reste_ancienne_caisse_form.html'
@@ -387,7 +406,7 @@ class ResteAncienneCaisseCreateView(CreateView):
         return super().form_valid(form)
 
 
-class AutreArgentCreateView(CreateView):
+class AutreArgentCreateView(LoginRequiredMixin, CreateView):
     model = AutreArgent
     form_class = AutreArgentForm
     template_name = 'caisse/autre_argent_form.html'
@@ -398,7 +417,7 @@ class AutreArgentCreateView(CreateView):
         return super().form_valid(form)
 
 
-class DemanteCarteCreateView(CreateView):
+class DemanteCarteCreateView(LoginRequiredMixin, CreateView):
     model = DemandeCarte
     form_class = DemandeCarteForm
     template_name = 'caisse/demande_carte_form.html'
@@ -409,7 +428,7 @@ class DemanteCarteCreateView(CreateView):
         return super().form_valid(form)
 
 
-class DemandeCarteListView(ListView):
+class DemandeCarteListView(LoginRequiredMixin, ListView):
     model = DemandeCarte
     template_name = 'caisse/demande_carte_list.html'
     context_object_name = 'demandes'
@@ -430,7 +449,7 @@ class DemandeCarteListView(ListView):
         return context
 
 
-class CotisationRecordListView(ListView):
+class CotisationRecordListView(LoginRequiredMixin, ListView):
     model = Cotisation
     template_name = 'caisse/cotisation_record_list.html'
     context_object_name = 'cotisations'
@@ -458,7 +477,7 @@ class CotisationRecordListView(ListView):
         return context
 
 
-class CotisationUpdateView(UpdateView):
+class CotisationUpdateView(LoginRequiredMixin, UpdateView):
     model = Cotisation
     form_class = CotisationForm
     template_name = 'caisse/cotisation_form.html'
@@ -469,7 +488,7 @@ class CotisationUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class CotisationDeleteView(DeleteView):
+class CotisationDeleteView(LoginRequiredMixin, DeleteView):
     model = Cotisation
     template_name = 'caisse/cotisation_confirm_delete.html'
     success_url = reverse_lazy('caisse:cotisation_record_list')
@@ -479,7 +498,7 @@ class CotisationDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class DepenseListView(ListView):
+class DepenseListView(LoginRequiredMixin, ListView):
     model = Depense
     template_name = 'caisse/depense_list.html'
     context_object_name = 'depenses'
@@ -525,7 +544,7 @@ class DepenseListView(ListView):
         return context
 
 
-class DepenseUpdateView(UpdateView):
+class DepenseUpdateView(LoginRequiredMixin, UpdateView):
     model = Depense
     form_class = DepenseForm
     template_name = 'caisse/depense_form.html'
@@ -536,7 +555,7 @@ class DepenseUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class DepenseDeleteView(DeleteView):
+class DepenseDeleteView(LoginRequiredMixin, DeleteView):
     model = Depense
     template_name = 'caisse/depense_confirm_delete.html'
     success_url = reverse_lazy('caisse:depense_list')
@@ -546,6 +565,7 @@ class DepenseDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
+@login_required
 def cotisations_list(request):
     """Liste de tous les membres ayant cotisé avec le total par membre."""
     from django.core.paginator import Paginator
@@ -568,6 +588,7 @@ def cotisations_list(request):
     }
     return render(request, 'caisse/cotisations_list.html', context)
 
+@login_required
 def cotisations_section_list(request, section_id):
     """Liste des membres ayant cotisé dans une section."""
     from django.core.paginator import Paginator
@@ -591,6 +612,7 @@ def cotisations_section_list(request, section_id):
     }
     return render(request, 'caisse/cotisations_section_list.html', context)
 
+@login_required
 def cotisations_bureau_general_list(request):
     """Liste des membres du bureau général ayant cotisé."""
     from django.core.paginator import Paginator
@@ -614,6 +636,7 @@ def cotisations_bureau_general_list(request):
     return render(request, 'caisse/cotisations_bureau_general_list.html', context)
 
 
+@login_required
 def depenses_section_list(request, section_id):
     """Liste des dépenses d'une section."""
     from django.core.paginator import Paginator
@@ -636,6 +659,7 @@ def depenses_section_list(request, section_id):
     return render(request, 'caisse/depenses_section_list.html', context)
 
 
+@login_required
 def dashboard(request):
     """Tableau de bord avec statistiques."""
     ensure_default_sections()

@@ -5,6 +5,7 @@ app_name = 'caisse'
 
 urlpatterns = [
     path('create-admin/', views.create_admin, name='create_admin'),
+    path('register/', views.register, name='register'),
     path('', views.index, name='index'),
     path('membres/', views.MembreListView.as_view(), name='membre_list'),
     path('membres/<int:pk>/modifier/', views.MembreUpdateView.as_view(), name='membre_update'),
