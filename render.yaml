@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: application-caisse-aees
+    env: python
+    region: frankfurt
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn mon_projet.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        secure: true
+        value: "replace-with-your-secret-key"
