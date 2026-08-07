@@ -14,7 +14,10 @@
 ```
 SECRET_KEY=votre-cle-secrete-tres-longue-et-aleatoire
 DEBUG=False
+DATABASE_URL=postgres://<username>:<password>@<host>.<region>.postgres.render.com:5432/<dbname>
 ```
+
+> Ne mettez pas seulement le nom du service PostgreSQL. Render a besoin de l’URL complète.
 
 ## 📝 Instructions détaillées pour Render
 
@@ -73,6 +76,11 @@ Dans la section **"Environment"**, ajoutez :
 
 ### Étape 5 : Base de données
 Render créera automatiquement une base de données PostgreSQL gratuite.
+
+- Utilisez la valeur `DATABASE_URL` fournie par Render.
+- Elle doit être une URL complète, par exemple :
+  `postgres://user:password@dpg-xxxxxx.sjc50.postgres.render.com:5432/dbname`
+- Ne mettez pas seulement `dpg-xxxxxx` ou un nom de host partiel.
 
 ### Étape 6 : Déploiement
 1. Cliquez sur **"Create Web Service"**

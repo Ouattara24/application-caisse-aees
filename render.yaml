@@ -13,3 +13,6 @@ services:
       - key: SECRET_KEY
         secure: true
         value: "replace-with-your-secret-key"
+      - key: DATABASE_URL
+        secure: true
+        value: "replace-with-your-full-postgres-url"
