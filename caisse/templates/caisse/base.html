@@ -154,6 +154,16 @@
             display: block;
         }
 
+        .nested-acccordion {
+            margin-top: 0.2rem;
+            padding-left: 0.2rem;
+        }
+
+        .nested-button {
+            background: linear-gradient(90deg, rgba(158,197,226,0.18), rgba(255,255,255,0.38));
+            border: 1px solid rgba(123, 171, 201, 0.14);
+        }
+
         .nav-link-item {
             display: flex;
             align-items: center;
@@ -337,14 +347,14 @@
 
             <div class="accordion-menu">
                 <div class="accordion-item">
-                    <button class="accordion-button" type="button" aria-expanded="false">
+                    <button class="accordion-button" type="button" aria-expanded="true">
                         <span class="menu-main">
                             <span class="icon"><i class="fa-solid fa-users"></i></span>
                             <span>Membres</span>
                         </span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </button>
-                    <div class="accordion-panel">
+                    <div class="accordion-panel open">
                         <a class="nav-link-item" href="{% url 'caisse:membre_create' %}">
                             <span class="icon"><i class="fa-solid fa-user-plus"></i></span>
                             <span>Ajouter membre</span>
@@ -356,6 +366,26 @@
                         <a class="nav-link-item" href="{% url 'caisse:bureau_general_list' %}">
                             <span class="icon"><i class="fa-solid fa-crown"></i></span>
                             <span>Bureau général</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-button" type="button" aria-expanded="true">
+                        <span class="menu-main">
+                            <span class="icon"><i class="fa-solid fa-id-card"></i></span>
+                            <span>Carte membre</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="accordion-panel open">
+                        <a class="nav-link-item" href="{% url 'caisse:demande_carte_create' %}">
+                            <span class="icon"><i class="fa-solid fa-user-plus"></i></span>
+                            <span>Enregistrer carte membre</span>
+                        </a>
+                        <a class="nav-link-item" href="{% url 'caisse:demande_carte_list' %}">
+                            <span class="icon"><i class="fa-solid fa-list-check"></i></span>
+                            <span>Membres avec carte payée</span>
                         </a>
                     </div>
                 </div>
