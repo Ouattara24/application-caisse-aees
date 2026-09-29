@@ -57,8 +57,8 @@
                         </td>
                         <td>{{ demande.notes }}</td>
                         <td>
-                            <a href="#" class="btn btn-xs btn-primary">Modifier</a>
-                            <a href="#" class="btn btn-xs btn-danger">Supprimer</a>
+                            <a href="{% url 'caisse:demande_carte_update' demande.pk %}" class="btn btn-xs btn-primary">Modifier</a>
+                            <a href="{% url 'caisse:demande_carte_delete' demande.pk %}" class="btn btn-xs btn-danger">Supprimer</a>
                         </td>
                     </tr>
                     {% empty %}

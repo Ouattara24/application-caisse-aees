@@ -3,7 +3,7 @@ from django.contrib.auth.models import Permission
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Cotisation, Depense, DonFinancier, DonMateriel, AutreArgent, ResteAncienneCaisse, Section, Membre
+from .models import Cotisation, Depense, DonFinancier, DonMateriel, AutreArgent, ResteAncienneCaisse, Section, Membre, DemandeCarte
 
 User = get_user_model()
 
@@ -27,6 +27,7 @@ class CaisseAppFeaturesTest(TestCase):
         self.autre_argent = AutreArgent.objects.create(montant=3000, source='Vente')
         self.reste_ancienne_caisse = ResteAncienneCaisse.objects.create(montant=2000, description='Solde')
         self.depense = Depense.objects.create(section=self.section, montant=1500, motif='Achat matériel')
+        self.demande_carte = DemandeCarte.objects.create(membre=self.membre, statut='EN_ATTENTE', notes='Première demande')
 
     def test_cotisation_exceptionnelle_is_used_in_choices(self):
         self.assertIn(('BOOSTER', 'Cotisation exceptionnelle'), Cotisation.TYPE_CHOICES)
@@ -65,6 +66,19 @@ class CaisseAppFeaturesTest(TestCase):
         response_reset = self.client.get(reverse('caisse:cotisation_record_list'))
         self.assertEqual(response_reset.status_code, 200)
         self.assertContains(response_reset, 'Réinitialiser')
+
+    def test_demande_carte_list_has_working_edit_and_delete_links(self):
+        response = self.client.get(reverse('caisse:demande_carte_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, reverse('caisse:demande_carte_update', args=[self.demande_carte.pk]))
+        self.assertContains(response, reverse('caisse:demande_carte_delete', args=[self.demande_carte.pk]))
+
+        update_response = self.client.get(reverse('caisse:demande_carte_update', args=[self.demande_carte.pk]))
+        self.assertEqual(update_response.status_code, 200)
+
+        delete_response = self.client.post(reverse('caisse:demande_carte_delete', args=[self.demande_carte.pk]), follow=True)
+        self.assertEqual(delete_response.status_code, 200)
+        self.assertFalse(DemandeCarte.objects.filter(pk=self.demande_carte.pk).exists())
 
     def test_admin_access_page_allows_permission_assignment(self):
         admin = User.objects.create_superuser(username='admin_test', password='admin123', email='')

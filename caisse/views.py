@@ -77,6 +77,11 @@ class DemandeCarteForm(forms.ModelForm):
         model = DemandeCarte
         fields = ['membre', 'statut', 'notes']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['membre'].queryset = Membre.objects.select_related('section').order_by('nom', 'prenom')
+        self.fields['membre'].label_from_instance = lambda obj: f"{obj.prenom} {obj.nom} ({obj.section.nom if obj.section else 'Sans section'})"
+
 
 def validate_minimum_password_length(value):
     if len(value) < 6:
@@ -532,6 +537,27 @@ class DemanteCarteCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, 'Demande de carte créée avec succès.')
         return super().form_valid(form)
+
+
+class DemandeCarteUpdateView(UpdateView):
+    model = DemandeCarte
+    form_class = DemandeCarteForm
+    template_name = 'caisse/demande_carte_form.html'
+    success_url = reverse_lazy('caisse:demande_carte_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Demande de carte modifiée avec succès.')
+        return super().form_valid(form)
+
+
+class DemandeCarteDeleteView(DeleteView):
+    model = DemandeCarte
+    template_name = 'caisse/demande_carte_confirm_delete.html'
+    success_url = reverse_lazy('caisse:demande_carte_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Demande de carte supprimée avec succès.')
+        return super().delete(request, *args, **kwargs)
 
 
 class DemandeCarteListView(ListView):

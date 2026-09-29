@@ -1,0 +1,22 @@
+{% extends 'caisse/base.html' %}
+
+{% block title %}Supprimer une demande de carte{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h2>Supprimer la demande de carte</h2>
+    </div>
+    <div class="card-body">
+        <p>Êtes-vous sûr de vouloir supprimer la demande de carte de <strong>{{ object.membre.prenom }} {{ object.membre.nom }}</strong> ?</p>
+        <p><strong>Statut :</strong> {{ object.get_statut_display }}</p>
+        <p><strong>Notes :</strong> {{ object.notes|default:'Aucune note' }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+            <a href="{% url 'caisse:demande_carte_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
