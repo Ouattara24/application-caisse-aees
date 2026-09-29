@@ -3,9 +3,53 @@
 {% block title %}Tableau de Bord{% endblock %}
 
 {% block content %}
+<style>
+    .dashboard-page h1 {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #173b58;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-page .dashboard-section-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: #516f8d;
+        text-transform: uppercase;
+    }
+
+    .dashboard-page .card {
+        border-radius: 16px;
+    }
+
+    .dashboard-page .card-header {
+        padding: 0.8rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+    }
+
+    .dashboard-page .card-header h3 {
+        margin: 0;
+        font-size: 0.82rem;
+        font-weight: 600;
+        line-height: 1.4;
+        letter-spacing: 0.01em;
+    }
+
+    .dashboard-page .card-body h4 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+</style>
+
+<div class="dashboard-page">
 <h1 class="mb-4">Tableau de Bord de l'AEES</h1>
 <div class="mb-4">
-    <h4>Membres par section</h4>
+    <h4 class="dashboard-section-title">Membres par section</h4>
 <div class="mt-2">
     {% for section in sections %}
         <a href="{% url 'caisse:membre_list' %}?section={{ section.id }}" 
@@ -343,5 +387,6 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}

@@ -3,22 +3,139 @@
 {% block title %}Accueil - AEES{% endblock %}
 
 {% block content %}
+<style>
+    .home-hero {
+        background: linear-gradient(135deg, #ecf7ff 0%, #dfeefb 35%, #ffffff 100%);
+        border: 1px solid rgba(95, 145, 194, 0.18);
+        border-radius: 28px;
+        padding: 1.5rem;
+        box-shadow: 0 18px 40px rgba(15, 80, 135, 0.08);
+        margin-bottom: 1.5rem;
+    }
+
+    .home-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        background: rgba(22, 93, 162, 0.08);
+        border: 1px solid rgba(22, 93, 162, 0.14);
+        color: #0e5a9b;
+        border-radius: 999px;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .home-hero h1 {
+        color: #133f67;
+        font-size: clamp(1.9rem, 2vw, 2.6rem);
+        margin-top: 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .home-hero p {
+        color: #516f8d;
+        margin-bottom: 0;
+    }
+
+    .hero-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: flex-end;
+    }
+
+    .hero-stat {
+        background: rgba(255,255,255,0.8);
+        border: 1px solid rgba(122, 168, 207, 0.2);
+        border-radius: 16px;
+        padding: 0.8rem 1rem;
+        min-width: 155px;
+        box-shadow: 0 10px 18px rgba(111, 160, 214, 0.08);
+    }
+
+    .hero-stat .label {
+        color: #67839a;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+    }
+
+    .hero-stat .value {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #153d66;
+        margin-top: 0.25rem;
+    }
+
+    .metric-card {
+        border: 0;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 36px rgba(102, 147, 196, 0.09);
+        border: 1px solid rgba(136, 174, 209, 0.12);
+        background: rgba(255,255,255,0.96);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 35px rgba(102, 147, 196, 0.14);
+    }
+
+    .metric-card .card-body {
+        padding: 1.15rem 1.1rem;
+    }
+
+    .section-card {
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid rgba(136, 174, 209, 0.13);
+        box-shadow: 0 16px 30px rgba(102, 147, 196, 0.07);
+    }
+
+    .section-card .card-header {
+        font-weight: 700;
+        padding: 1rem 1.15rem;
+    }
+
+    @media (max-width: 767px) {
+        .hero-stats {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
 <div class="page-panel">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div class="home-hero d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
         <div>
-            <span class="badge text-bg-primary-subtle border border-primary-subtle mb-2 px-3 py-2">Tableau de bord</span>
-            <h1 class="h2 fw-bold mb-1 text-primary-emphasis">Application de gestion de caisse</h1>
-            <p class="text-secondary mb-0">Amicale des Élèves et Étudiants de Sokala-Sobara</p>
+            <span class="home-badge"><i class="fa-solid fa-chart-line"></i> Tableau de bord</span>
+            <h1>AEES - Gestion de caisse</h1>
+            <p>Amicale des Élèves et Étudiants de Sokala-Sobara</p>
         </div>
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="{% url 'caisse:membre_create' %}" class="btn btn-success btn-lg"><i class="fa-solid fa-user-plus me-2"></i>Ajouter membre</a>
-            <a href="{% url 'caisse:cotisation_create' %}?type=ANNUELLE" class="btn btn-primary btn-lg"><i class="fa-solid fa-circle-dollar-to-slot me-2"></i>Nouvelle cotisation</a>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="label">Membres</div>
+                <div class="value">{{ sections|length }}</div>
+            </div>
+            <div class="hero-stat">
+                <div class="label">Cotisation</div>
+                <div class="value">{{ total_annuelle }} FCFA</div>
+            </div>
+            <div class="hero-stat">
+                <div class="label">Dépenses</div>
+                <div class="value">{{ bg_annuelle|add:bg_autre }} FCFA</div>
+            </div>
         </div>
     </div>
 
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, #f4f9ff 0%, #eaf5ff 100%);">
+            <div class="metric-card card h-100" style="background: linear-gradient(135deg, #f4f9ff 0%, #eaf5ff 100%);">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-muted small text-uppercase fw-semibold">Membres</span>
@@ -30,7 +147,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, #f3fff9 0%, #ebfff5 100%);">
+            <div class="metric-card card h-100" style="background: linear-gradient(135deg, #f3fff9 0%, #ebfff5 100%);">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-muted small text-uppercase fw-semibold">Cotisations</span>
@@ -42,7 +159,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, #f1fbff 0%, #eaf9ff 100%);">
+            <div class="metric-card card h-100" style="background: linear-gradient(135deg, #f1fbff 0%, #eaf9ff 100%);">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-muted small text-uppercase fw-semibold">Exceptionnelle</span>
@@ -54,7 +171,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, #fffaf0 0%, #fff5e6 100%);">
+            <div class="metric-card card h-100" style="background: linear-gradient(135deg, #fffaf0 0%, #fff5e6 100%);">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-muted small text-uppercase fw-semibold">Dépenses</span>
