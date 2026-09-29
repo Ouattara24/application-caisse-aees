@@ -2,134 +2,368 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#007bff">
+    <meta name="theme-color" content="#0f172a">
     <meta name="description" content="Application de gestion de caisse pour l'Amicale des Élèves et Étudiants de Sokala-Sobara">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'icons/icon-192.svg' %}">
 
-```
-<link rel="manifest" href="{% static 'manifest.json' %}">
-<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
-<link rel="apple-touch-icon" href="{% static 'icons/icon-192.svg' %}">
+    <title>{% block title %}AEES - Gestion de Caisse{% endblock %}</title>
 
-<title>{% block title %}AEES - Gestion de Caisse{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- FontAwesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-    body {
-        background-color: #f8f9fa;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .card {
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .btn {
-        border-radius: 8px;
-    }
-
-    /* Mobile responsiveness */
-    @media (max-width: 768px) {
-        .card-header .d-flex {
-            flex-direction: column;
-            align-items: stretch !important;
+    <style>
+        :root {
+            --sidebar-bg: #e3f0fb;
+            --sidebar-soft: #f3f9ff;
+            --primary: #9ec5e2;
+            --primary-soft: #edf7ff;
+            --success: #8cc7ae;
+            --warning: #f2d58a;
+            --danger: #e8a7a7;
+            --gray-100: #f8fbff;
+            --gray-200: #e6f2fb;
+            --gray-600: #647d93;
+            --gray-700: #38536d;
+            --shadow-soft: 0 12px 30px rgba(126, 170, 201, 0.12);
         }
-        .card-header .d-flex > * {
-            margin-bottom: 0.5rem;
+
+        body {
+            background: linear-gradient(135deg, #f3f9ff 0%, #f8fcff 35%, #edf6ff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1f3950;
         }
-        .card-header .d-flex > *:last-child {
-            margin-bottom: 0;
+
+        .app-shell {
+            min-height: 100vh;
+            display: flex;
         }
-        .btn {
-            width: 100%;
-            margin-bottom: 0.25rem;
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #edf7ff 0%, #dfeefb 100%);
+            color: #1f3950;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            box-shadow: 10px 0 25px rgba(120, 165, 198, 0.12);
+            padding: 1.25rem 1rem;
+            border-right: 1px solid rgba(120, 165, 198, 0.15);
         }
-        .table-responsive {
+
+        .brand-box {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(150, 183, 206, 0.25);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .brand-box .brand-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #5fa9df, #3d87c7);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.2);
+        }
+
+        .brand-box .brand-name {
+            color: #1d5d92;
+            font-weight: 800;
+        }
+
+        .brand-box .brand-subtitle {
+            color: #3b79ad;
+            font-weight: 600;
+        }
+
+        .nav-section-title {
+            color: #67839a;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin: 1rem 0.5rem 0.6rem;
+            font-weight: 700;
+        }
+
+        .nav-link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 0.9rem;
+            border-radius: 12px;
+            color: #244d6b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-bottom: 0.35rem;
+        }
+
+        .nav-link-item:hover,
+        .nav-link-item.active {
+            background: linear-gradient(90deg, rgba(158,197,226,0.3), rgba(255,255,255,0.5));
+            color: #153b58;
+            transform: translateX(2px);
+            box-shadow: inset 0 0 0 1px rgba(123, 171, 201, 0.18);
+        }
+
+        .nav-link-item.home-item,
+        .nav-link-item.home-item:hover,
+        .nav-link-item.home-item.active {
+            background: linear-gradient(135deg, #0d5ea8 0%, #0a7cc5 100%);
+            color: #ffffff;
+            box-shadow: 0 12px 22px rgba(13, 94, 168, 0.24);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-link-item.home-item .icon,
+        .nav-link-item.home-item:hover .icon,
+        .nav-link-item.home-item.active .icon {
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+        }
+
+        .nav-link-item .icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(158, 197, 226, 0.22);
             font-size: 0.9rem;
+            color: #355d7c;
         }
-        .card-body .btn {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-        }
-    }
-</style>
-```
 
+        .content-area {
+            flex: 1;
+            padding: 1.5rem 1.25rem 2rem;
+        }
+
+        .topbar {
+            background: linear-gradient(135deg, #0d4f8d 0%, #0d6bb4 40%, #0b3d77 100%);
+            border: 1px solid rgba(8, 46, 80, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 18px 34px rgba(13, 79, 141, 0.22);
+            padding: 1.1rem 1.35rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            min-height: 78px;
+        }
+
+        .topbar .user-pill {
+            border-radius: 999px;
+            padding: 0.65rem 1rem;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.92rem;
+            color: white;
+        }
+
+        .topbar .brand-title {
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .card {
+            border: 0;
+            border-radius: 18px;
+            box-shadow: var(--shadow-soft);
+            background: rgba(255,255,255,0.98);
+            border: 1px solid rgba(158, 197, 226, 0.12);
+        }
+
+        .card-header {
+            border: 0;
+            border-radius: 18px 18px 0 0 !important;
+            padding: 1rem 1.15rem;
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 16px rgba(158, 197, 226, 0.14);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a9d0eb 0%, #9abfe0 100%);
+            border-color: #9abfe0;
+            color: #173b58;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #b8dbf4 0%, #a4c7e2 100%);
+            border-color: #a4c7e2;
+            color: #123451;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .page-panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(242,249,255,0.98));
+            border: 1px solid rgba(158, 202, 225, 0.18);
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            padding: 1.2rem;
+        }
+
+        @media (max-width: 991px) {
+            .app-shell {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .content-area {
+                padding-top: 1rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-<!-- MENU -->
-
-<div class="container mt-3 d-flex justify-content-between align-items-center">
-    <button onclick="toggleMenu()" class="btn btn-primary mb-3">
-        📊 Tableau de bord
-    </button>
-    <div class="mb-3">
-        <a href="{% url 'caisse:dashboard' %}" class="btn btn-outline-primary">Tableau de bord</a>
-    </div>
-</div>
-
-```
-<div id="menu" class="card p-3" style="display:none;">
-    <a class="btn btn-outline-primary mb-2" href="{% url 'caisse:dashboard' %}">Tableau de bord</a>
-    <a class="btn btn-outline-success mb-2" href="{% url 'caisse:membre_create' %}">Ajouter membre</a>
-    <a class="btn btn-outline-secondary mb-2" href="{% url 'caisse:membre_list' %}">Tous les membres</a>
-    <a class="btn btn-outline-warning mb-2" href="{% url 'caisse:bureau_general_list' %}">Bureau général</a>
-    <a class="btn btn-outline-info mb-2" href="{% url 'caisse:cotisation_record_list' %}">Gestion cotisations</a>
-    <a class="btn btn-outline-danger mb-2" href="{% url 'caisse:depense_list' %}">Gestion des dépenses</a>
-</div>
-```
-
-</div>
-
-<script>
-function toggleMenu() {
-    var menu = document.getElementById("menu");
-    menu.style.display = (menu.style.display === "none") ? "block" : "none";
-}
-</script>
-
-<!-- CONTENU -->
-
-<div class="container mt-4">
-    {% if messages %}
-        <div class="mb-3">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand-box d-flex align-items-center gap-3">
+                <div class="brand-icon"><i class="fa-solid fa-landmark"></i></div>
+                <div>
+                    <div class="brand-name fw-bold fs-6 mb-0">AEES</div>
+                    <small class="brand-subtitle">Gestion de caisse</small>
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-    {% block content %}{% endblock %}
-</div>
+            </div>
 
-<!-- JS Bootstrap -->
+            <div class="nav-section-title">Navigation</div>
+            <a class="nav-link-item home-item {% if request.path == '/' %}active{% endif %}" href="{% url 'caisse:index' %}">
+                <span class="icon"><i class="fa-solid fa-house"></i></span>
+                <span>Accueil</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:dashboard' %}">
+                <span class="icon"><i class="fa-solid fa-table-columns"></i></span>
+                <span>Tableau de bord</span>
+            </a>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <div class="nav-section-title">Membres</div>
+            <a class="nav-link-item" href="{% url 'caisse:membre_create' %}">
+                <span class="icon"><i class="fa-solid fa-user-plus"></i></span>
+                <span>Ajouter membre</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:membre_list' %}">
+                <span class="icon"><i class="fa-solid fa-users"></i></span>
+                <span>Tous les membres</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:bureau_general_list' %}">
+                <span class="icon"><i class="fa-solid fa-crown"></i></span>
+                <span>Bureau général</span>
+            </a>
 
-<!-- SERVICE WORKER -->
+            <div class="nav-section-title">Cotisations</div>
+            <a class="nav-link-item" href="{% url 'caisse:cotisation_record_list' %}">
+                <span class="icon"><i class="fa-solid fa-wallet"></i></span>
+                <span>Gestion cotisations</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:cotisation_create' %}?type=ANNUELLE">
+                <span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>
+                <span>Cotisation annuelle</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:cotisation_create' %}?type=BOOSTER">
+                <span class="icon"><i class="fa-solid fa-sack-dollar"></i></span>
+                <span>Cotisation exceptionnelle</span>
+            </a>
 
-<script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register("{% static 'sw.js' %}");
-    });
-}
-</script>
+            <div class="nav-section-title">Finances</div>
+            <a class="nav-link-item" href="{% url 'caisse:depense_list' %}">
+                <span class="icon"><i class="fa-solid fa-money-bill-transfer"></i></span>
+                <span>Dépenses</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:don_financier_create' %}">
+                <span class="icon"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                <span>Dons financiers</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:don_materiel_create' %}">
+                <span class="icon"><i class="fa-solid fa-box-open"></i></span>
+                <span>Dons matériels</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:reste_ancienne_caisse_create' %}">
+                <span class="icon"><i class="fa-solid fa-box-archive"></i></span>
+                <span>Reste ancienne caisse</span>
+            </a>
+            <a class="nav-link-item" href="{% url 'caisse:autre_argent_create' %}">
+                <span class="icon"><i class="fa-solid fa-coins"></i></span>
+                <span>Autre argent</span>
+            </a>
 
+            {% if user.is_authenticated and user.is_superuser %}
+            <div class="nav-section-title">Administration</div>
+            <a class="nav-link-item" href="{% url 'caisse:admin_access_control' %}">
+                <span class="icon"><i class="fa-solid fa-shield-halved"></i></span>
+                <span>Gestion des accès</span>
+            </a>
+            {% endif %}
+        </aside>
+
+        <main class="content-area">
+            <div class="topbar d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <div class="small text-uppercase fw-semibold" style="color: #3779ae;">Application AEES</div>
+                    <div class="brand-title fw-bold fs-5">Gestion de caisse</div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    {% if user.is_authenticated %}
+                        <span class="user-pill"><i class="fa-solid fa-user me-2"></i>{{ user.username }}</span>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Se connecter</a>
+                    {% endif %}
+                    <a href="{% url 'caisse:dashboard' %}" class="btn btn-outline-primary btn-sm">Dashboard</a>
+                </div>
+            </div>
+
+            {% if messages %}
+                <div class="mb-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{% static 'sw.js' %}');
+            });
+        }
+    </script>
 </body>
 </html>
 

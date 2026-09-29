@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cotisation',
             name='type',
-            field=models.CharField(choices=[('ANNUELLE', 'Annuelle'), ('BOOSTER', 'Autre cotisation')], max_length=8),
+            field=models.CharField(choices=[('ANNUELLE', 'Annuelle'), ('BOOSTER', 'Cotisation exceptionnelle')], max_length=8),
         ),
         migrations.CreateModel(
             name='DemandeCarte',

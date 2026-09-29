@@ -30,7 +30,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h3>Membres Payeurs Cotisation Annuelle</h3>
+                <h3>Nombre de membres ayant payé la cotisation annuelle</h3>
             </div>
             <div class="card-body">
                 <h4 class="text-primary">{{ membres_payeurs_annuelle }}</h4>
@@ -40,7 +40,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h3>Membres Payeurs Cotisation Autre</h3>
+                <h3>Nombre de membres ayant payé la cotisation exceptionnelle</h3>
             </div>
             <div class="card-body">
                 <h4 class="text-info">{{ membres_payeurs_autre }}</h4>
@@ -103,6 +103,123 @@
             </div>
             <div class="card-body">
                 <h4 class="text-info">{{ total_dons_materiels }} dons</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3>Dons financiers récents</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Montant</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for don in dons_financiers_recents %}
+                            <tr>
+                                <td>{{ don.source }}</td>
+                                <td>{{ don.montant|floatformat:0 }} FCFA</td>
+                                <td>{{ don.date|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <a href="{% url 'caisse:don_financier_update' don.pk %}" class="btn btn-warning btn-sm">Modifier</a>
+                                    <a href="{% url 'caisse:don_financier_delete' don.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center">Aucun don financier.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3>Dons matériels récents</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for don in dons_materiels_recents %}
+                            <tr>
+                                <td>{{ don.source }}</td>
+                                <td>{{ don.description }}</td>
+                                <td>{{ don.date|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <a href="{% url 'caisse:don_materiel_update' don.pk %}" class="btn btn-warning btn-sm">Modifier</a>
+                                    <a href="{% url 'caisse:don_materiel_delete' don.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center">Aucun don matériel.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h3>Entrées de caisse</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Source</th>
+                                <th>Montant</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entree in entrees_dashboard %}
+                            <tr>
+                                <td>{{ entree.type }}</td>
+                                <td>{{ entree.label }}</td>
+                                <td>{{ entree.montant|floatformat:0 }} FCFA</td>
+                                <td>{{ entree.date|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <a href="{{ entree.update_url }}" class="btn btn-warning btn-sm">Modifier</a>
+                                    <a href="{{ entree.delete_url }}" class="btn btn-danger btn-sm">Supprimer</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center">Aucune entrée enregistrée.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

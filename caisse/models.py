@@ -40,7 +40,7 @@ class Cotisation(models.Model):
     """Une cotisation payée par un membre."""
     TYPE_CHOICES = [
         ('ANNUELLE', 'Annuelle'),
-        ('BOOSTER', 'Autre cotisation'),
+        ('BOOSTER', 'Cotisation exceptionnelle'),
     ]
 
     membre = models.ForeignKey(Membre, on_delete=models.CASCADE)

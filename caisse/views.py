@@ -2,8 +2,10 @@ from django.http import HttpResponse
 
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum, F
 from django.http import Http404
@@ -75,16 +77,31 @@ class DemandeCarteForm(forms.ModelForm):
         model = DemandeCarte
         fields = ['membre', 'statut', 'notes']
 
+
+def validate_minimum_password_length(value):
+    if len(value) < 6:
+        raise ValidationError('Le mot de passe doit contenir au moins 6 caractères.')
+
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        fields = ('username',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].validators = [validate_minimum_password_length]
+        self.fields['password2'].validators = [validate_minimum_password_length]
+
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            messages.success(request, 'Compte créé avec succès. Vous êtes maintenant connecté.')
-            return redirect('caisse:index')
+            messages.success(request, 'Compte créé avec succès. Vous pouvez maintenant vous connecter.')
+            return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
 
     return render(request, 'caisse/register.html', {'form': form})
 
@@ -129,6 +146,13 @@ def index(request):
         membre__est_membre_bureau_general=True, 
         type='BOOSTER'
     ).aggregate(total=Sum('montant'))['total'] or 0
+
+    active_users_count = User.objects.filter(is_active=True).count()
+    recent_users = list(
+        User.objects.filter(is_active=True)
+        .order_by('-last_login', 'username')
+        .values('username', 'last_login')[:5]
+    )
     
     context = {
         'sections': sections,
@@ -137,6 +161,8 @@ def index(request):
         'total_autre': total_autre,
         'bg_annuelle': bg_annuelle,
         'bg_autre': bg_autre,
+        'active_users_count': active_users_count,
+        'recent_users': recent_users,
     }
     
     return render(request, 'caisse/index.html', context)
@@ -380,6 +406,27 @@ class DonFinancierCreateView(CreateView):
         return super().form_valid(form)
 
 
+class DonFinancierUpdateView(UpdateView):
+    model = DonFinancier
+    form_class = DonFinancierForm
+    template_name = 'caisse/don_financier_form.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Don financier modifié avec succès.')
+        return super().form_valid(form)
+
+
+class DonFinancierDeleteView(DeleteView):
+    model = DonFinancier
+    template_name = 'caisse/don_financier_confirm_delete.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Don financier supprimé avec succès.')
+        return super().delete(request, *args, **kwargs)
+
+
 class DonMaterielCreateView(CreateView):
     model = DonMateriel
     form_class = DonMaterielForm
@@ -389,6 +436,27 @@ class DonMaterielCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, 'Don matériel ajouté avec succès.')
         return super().form_valid(form)
+
+
+class DonMaterielUpdateView(UpdateView):
+    model = DonMateriel
+    form_class = DonMaterielForm
+    template_name = 'caisse/don_materiel_form.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Don matériel modifié avec succès.')
+        return super().form_valid(form)
+
+
+class DonMaterielDeleteView(DeleteView):
+    model = DonMateriel
+    template_name = 'caisse/don_materiel_confirm_delete.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Don matériel supprimé avec succès.')
+        return super().delete(request, *args, **kwargs)
 
 
 class ResteAncienneCaisseCreateView(CreateView):
@@ -402,6 +470,27 @@ class ResteAncienneCaisseCreateView(CreateView):
         return super().form_valid(form)
 
 
+class ResteAncienneCaisseUpdateView(UpdateView):
+    model = ResteAncienneCaisse
+    form_class = ResteAncienneCaisseForm
+    template_name = 'caisse/reste_ancienne_caisse_form.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Reste ancienne caisse modifié avec succès.')
+        return super().form_valid(form)
+
+
+class ResteAncienneCaisseDeleteView(DeleteView):
+    model = ResteAncienneCaisse
+    template_name = 'caisse/reste_ancienne_caisse_confirm_delete.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Reste ancienne caisse supprimé avec succès.')
+        return super().delete(request, *args, **kwargs)
+
+
 class AutreArgentCreateView(CreateView):
     model = AutreArgent
     form_class = AutreArgentForm
@@ -411,6 +500,27 @@ class AutreArgentCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, 'Autre argent ajouté avec succès.')
         return super().form_valid(form)
+
+
+class AutreArgentUpdateView(UpdateView):
+    model = AutreArgent
+    form_class = AutreArgentForm
+    template_name = 'caisse/autre_argent_form.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Autre argent modifié avec succès.')
+        return super().form_valid(form)
+
+
+class AutreArgentDeleteView(DeleteView):
+    model = AutreArgent
+    template_name = 'caisse/autre_argent_confirm_delete.html'
+    success_url = reverse_lazy('caisse:dashboard')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Autre argent supprimé avec succès.')
+        return super().delete(request, *args, **kwargs)
 
 
 class DemanteCarteCreateView(CreateView):
@@ -633,14 +743,15 @@ def depenses_section_list(request, section_id):
     """Liste des dépenses d'une section."""
     from django.core.paginator import Paginator
     from django.db.models import Sum
-    
+
     section = get_object_or_404(Section, pk=section_id)
-    
+    page_number = request.GET.get('page')
+
     depenses = Depense.objects.filter(section=section).order_by('-date')
-    
+
     paginator = Paginator(depenses, 10)
     page_obj = paginator.get_page(page_number)
-    
+
     context = {
         'section': section,
         'page_obj': page_obj,
@@ -688,6 +799,47 @@ def dashboard(request):
 
     # Toutes les dépenses
     toutes_depenses = Depense.objects.all()
+    dons_financiers_recents = DonFinancier.objects.order_by('-date')[:10]
+    dons_materiels_recents = DonMateriel.objects.order_by('-date')[:10]
+
+    entrees_dashboard = []
+    for don in DonFinancier.objects.all().order_by('-date'):
+        entrees_dashboard.append({
+            'type': 'Don financier',
+            'label': don.source,
+            'montant': don.montant,
+            'date': don.date,
+            'update_url': reverse_lazy('caisse:don_financier_update', args=[don.pk]),
+            'delete_url': reverse_lazy('caisse:don_financier_delete', args=[don.pk]),
+        })
+    for don in DonMateriel.objects.all().order_by('-date'):
+        entrees_dashboard.append({
+            'type': 'Don matériel',
+            'label': don.source,
+            'montant': don.description,
+            'date': don.date,
+            'update_url': reverse_lazy('caisse:don_materiel_update', args=[don.pk]),
+            'delete_url': reverse_lazy('caisse:don_materiel_delete', args=[don.pk]),
+        })
+    for item in ResteAncienneCaisse.objects.all().order_by('-date'):
+        entrees_dashboard.append({
+            'type': 'Reste ancienne caisse',
+            'label': item.description or 'Reste ancienne caisse',
+            'montant': item.montant,
+            'date': item.date,
+            'update_url': reverse_lazy('caisse:reste_ancienne_caisse_update', args=[item.pk]),
+            'delete_url': reverse_lazy('caisse:reste_ancienne_caisse_delete', args=[item.pk]),
+        })
+    for item in AutreArgent.objects.all().order_by('-date'):
+        entrees_dashboard.append({
+            'type': 'Autre argent',
+            'label': item.source,
+            'montant': item.montant,
+            'date': item.date,
+            'update_url': reverse_lazy('caisse:autre_argent_update', args=[item.pk]),
+            'delete_url': reverse_lazy('caisse:autre_argent_delete', args=[item.pk]),
+        })
+    entrees_dashboard.sort(key=lambda item: item['date'], reverse=True)
 
     sections = Section.objects.all()
 
@@ -708,6 +860,51 @@ def dashboard(request):
         'membres_payeurs_autre': membres_payeurs_autre,
         'toutes_cotisations': toutes_cotisations,
         'toutes_depenses': toutes_depenses,
+        'dons_financiers_recents': dons_financiers_recents,
+        'dons_materiels_recents': dons_materiels_recents,
+        'entrees_dashboard': entrees_dashboard,
+    })
+
+
+@user_passes_test(lambda user: user.is_authenticated and user.is_superuser)
+def admin_access_control(request):
+    permissions = Permission.objects.filter(content_type__app_label='caisse').order_by('name')
+    users = User.objects.all().order_by('username')
+    user_rows = []
+
+    for user in users:
+        permission_states = []
+        user_permission_names = set(user.get_all_permissions())
+        for permission in permissions:
+            permission_states.append({
+                'permission': permission,
+                'checked': f'{permission.content_type.app_label}.{permission.codename}' in user_permission_names,
+            })
+        user_rows.append({
+            'user': user,
+            'permission_states': permission_states,
+        })
+
+    if request.method == 'POST':
+        for user in users:
+            user.is_staff = request.POST.get(f'user_{user.pk}_staff') == 'on'
+            user.is_active = request.POST.get(f'user_{user.pk}_active') == 'on'
+            user.user_permissions.clear()
+
+            selected_permission_ids = [
+                int(key.split('_perm_')[-1])
+                for key in request.POST
+                if key.startswith(f'user_{user.pk}_perm_')
+            ]
+            user.user_permissions.set(Permission.objects.filter(id__in=selected_permission_ids))
+            user.save()
+
+        messages.success(request, 'Les droits d’accès ont été mis à jour avec succès.')
+        return redirect('caisse:admin_access_control')
+
+    return render(request, 'caisse/admin_access_control.html', {
+        'user_rows': user_rows,
+        'permissions': permissions,
     })
 
 

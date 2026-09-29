@@ -5,6 +5,7 @@ app_name = 'caisse'
 
 urlpatterns = [
     path('create-admin/', views.create_admin, name='create_admin'),
+    path('register/', views.register, name='register'),
     path('', views.index, name='index'),
     path('membres/', views.MembreListView.as_view(), name='membre_list'),
     path('membres/<int:pk>/modifier/', views.MembreUpdateView.as_view(), name='membre_update'),
@@ -28,10 +29,19 @@ urlpatterns = [
     path('depense/<int:pk>/supprimer/', views.DepenseDeleteView.as_view(), name='depense_delete'),
     path('depense/ajouter/', views.DepenseCreateView.as_view(), name='depense_create'),
     path('don-financier/ajouter/', views.DonFinancierCreateView.as_view(), name='don_financier_create'),
+    path('don-financier/<int:pk>/modifier/', views.DonFinancierUpdateView.as_view(), name='don_financier_update'),
+    path('don-financier/<int:pk>/supprimer/', views.DonFinancierDeleteView.as_view(), name='don_financier_delete'),
     path('don-materiel/ajouter/', views.DonMaterielCreateView.as_view(), name='don_materiel_create'),
+    path('don-materiel/<int:pk>/modifier/', views.DonMaterielUpdateView.as_view(), name='don_materiel_update'),
+    path('don-materiel/<int:pk>/supprimer/', views.DonMaterielDeleteView.as_view(), name='don_materiel_delete'),
     path('reste-ancienne-caisse/ajouter/', views.ResteAncienneCaisseCreateView.as_view(), name='reste_ancienne_caisse_create'),
+    path('reste-ancienne-caisse/<int:pk>/modifier/', views.ResteAncienneCaisseUpdateView.as_view(), name='reste_ancienne_caisse_update'),
+    path('reste-ancienne-caisse/<int:pk>/supprimer/', views.ResteAncienneCaisseDeleteView.as_view(), name='reste_ancienne_caisse_delete'),
     path('autre-argent/ajouter/', views.AutreArgentCreateView.as_view(), name='autre_argent_create'),
+    path('autre-argent/<int:pk>/modifier/', views.AutreArgentUpdateView.as_view(), name='autre_argent_update'),
+    path('autre-argent/<int:pk>/supprimer/', views.AutreArgentDeleteView.as_view(), name='autre_argent_delete'),
     path('demande-carte/ajouter/', views.DemanteCarteCreateView.as_view(), name='demande_carte_create'),
     path('demande-carte/', views.DemandeCarteListView.as_view(), name='demande_carte_list'),
+    path('gestion-acces/', views.admin_access_control, name='admin_access_control'),
     path('dashboard/', views.dashboard, name='dashboard'),
 ]
